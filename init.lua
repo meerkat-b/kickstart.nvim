@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -311,7 +311,11 @@ require('lazy').setup({
       -- Document existing key chains
       spec = {
         { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
-        { '<leader>t', group = '[T]oggle' },
+        { '<leader>g', group = '[G]enerate' },
+        { '<leader>gg', group = '[G]olang' },
+        { '<leader>ggt', group = '[T]esting' },
+        { '<leader>r', group = '[R]un/Test' },
+        { '<leader>rg', group = '[G]olang' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },
@@ -593,8 +597,8 @@ require('lazy').setup({
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --  See `:help lsp-config` for information about keys and how to configure
       local servers = {
-        -- clangd = {},
-        -- gopls = {},
+        clangd = {},
+        gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
         --
@@ -614,7 +618,7 @@ require('lazy').setup({
       -- You can press `g?` for help in this menu.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'lua_ls', -- Lua Language server
+        'lua-language-server', -- Lua Language server
         'stylua', -- Used to format Lua code
         -- You can add other tools here that you want Mason to install
       })
@@ -750,7 +754,7 @@ require('lazy').setup({
         -- <c-k>: Toggle signature help
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
-        preset = 'default',
+        preset = 'enter',
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
@@ -801,13 +805,44 @@ require('lazy').setup({
         styles = {
           comments = { italic = false }, -- Disable italics in comments
         },
+        on_highlights = function(hl, c)
+          -- Make normal text brighter white for more contrast
+          hl.Normal = { fg = '#ffffff', bg = c.bg }
+          hl['@variable'] = { fg = '#ffffff' }
+          hl['@property'] = { fg = '#ffffff' }
+          hl['@parameter'] = { fg = '#ffffff' }
+          hl.Identifier = { fg = '#ffffff' }
+        end,
       }
 
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
     end,
+  },
+  {
+    'rebelot/kanagawa.nvim',
+    priority = 1000, -- load before other plugins
+    config = function()
+      require('kanagawa').setup {
+        -- optional config goes here
+      }
+    end,
+  },
+  {
+    'EdenEast/nightfox.nvim',
+    priority = 1000, -- load before other plugins
+    config = function()
+      require('nightfox').setup {
+        -- optional config goes here
+      }
+    end,
+  },
+  {
+    'folke/tokyonight.nvim',
+    lazy = false,
+    priority = 1000,
+    opts = {},
   },
 
   -- Highlight todo, notes, etc in comments
@@ -852,7 +887,7 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     config = function()
-      local filetypes = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+      local filetypes = { 'bash', 'c', 'diff', 'go', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
       require('nvim-treesitter').install(filetypes)
       vim.api.nvim_create_autocmd('FileType', {
         pattern = filetypes,
@@ -870,10 +905,10 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
@@ -909,5 +944,7 @@ require('lazy').setup({
   },
 })
 
+require 'amir.theme'
+require 'amir.options'
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
