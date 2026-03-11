@@ -1,23 +1,32 @@
 --vim.opt.guicursor = 'n-v-c-sm:block-Cursor,i-ci-ve:ver25-Cursor,r-cr-o:hor20-Cursor'
 --
-local function open_in_split(target)
-  local wins = vim.api.nvim_tabpage_list_wins(0)
-  if #wins > 1 then
-    -- Move to the other window and open the file there
-    vim.cmd 'wincmd w'
-    vim.cmd('edit ' .. target)
-  else
-    vim.cmd('vsplit ' .. target)
-  end
-end
-
 vim.o.wrap = true
 vim.opt.shiftwidth = 2
 vim.opt.tabstop = 4
 vim.opt.expandtab = true
 
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = function() vim.cmd 'windo set wrap' end,
+})
+
+vim.keymap.set('n', '<leader>x', '<cmd>close<CR>', { desc = 'Close current window' })
 vim.keymap.set('n', '<leader>rgt', ':terminal go test ./...<CR>', { desc = 'Run Go tests' })
 vim.keymap.set('n', '<leader>rgr', ':terminal go run .<CR>', { desc = 'Run Go' })
+vim.keymap.set('n', '<leader>dt', function() require('dap-go').debug_test() end, { desc = 'Debug: Test under cursor' })
+vim.keymap.set('n', '<leader>rt', function()
+  local node = vim.treesitter.get_node()
+  while node do
+    if node:type() == 'function_declaration' then
+      local name = vim.treesitter.get_node_text(node:field('name')[1], 0)
+      if name:match '^Test' then
+        vim.cmd('split | terminal go test -run ' .. name .. ' -v ./')
+        return
+      end
+    end
+    node = node:parent()
+  end
+  vim.notify('No test function found under cursor', vim.log.levels.WARN)
+end, { desc = 'Run test under cursor' })
 
 vim.keymap.set('n', '<leader>ggtt', function()
   local file = vim.fn.expand '%:r'
