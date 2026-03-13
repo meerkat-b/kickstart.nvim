@@ -9,6 +9,8 @@ vim.api.nvim_create_autocmd('VimEnter', {
   callback = function() vim.cmd 'windo set wrap' end,
 })
 
+vim.keymap.set('n', '<leader>e', '<Cmd>Neotree<CR>')
+
 vim.keymap.set('n', '<leader>x', '<cmd>close<CR>', { desc = 'Close current window' })
 vim.keymap.set('n', '<leader>rgt', ':terminal go test ./...<CR>', { desc = 'Run Go tests' })
 vim.keymap.set('n', '<leader>rgr', ':terminal go run .<CR>', { desc = 'Run Go' })
