@@ -9,8 +9,45 @@ vim.api.nvim_create_autocmd('VimEnter', {
   callback = function() vim.cmd 'windo set wrap' end,
 })
 
-vim.keymap.set('n', '<leader>e', '<Cmd>Neotree<CR>')
+--
+--  KEYMAPS START
+--
+vim.keymap.set({ 'x', 'o' }, 'am', function() require('nvim-treesitter-textobjects.select').select_textobject('@function.outer', 'textobjects') end)
+vim.keymap.set({ 'x', 'o' }, 'im', function() require('nvim-treesitter-textobjects.select').select_textobject('@function.inner', 'textobjects') end)
+vim.keymap.set({ 'x', 'o' }, 'aa', function() require('nvim-treesitter-textobjects.select').select_textobject('@parameter.outer', 'textobjects') end)
+vim.keymap.set({ 'x', 'o' }, 'ia', function() require('nvim-treesitter-textobjects.select').select_textobject('@parameter.inner', 'textobjects') end)
+vim.keymap.set({ 'x', 'o' }, 'ac', function() require('nvim-treesitter-textobjects.select').select_textobject('@class.outer', 'textobjects') end)
+vim.keymap.set({ 'x', 'o' }, 'ic', function() require('nvim-treesitter-textobjects.select').select_textobject('@class.inner', 'textobjects') end)
 
+vim.keymap.set('n', '<leader>a', function() require('nvim-treesitter-textobjects.swap').swap_next '@parameter.inner' end)
+vim.keymap.set('n', '<leader>A', function() require('nvim-treesitter-textobjects.swap').swap_previous '@parameter.inner' end)
+vim.keymap.set({ 'n', 'x', 'o' }, ']m', function() require('nvim-treesitter-textobjects.move').goto_next_start('@function.outer', 'textobjects') end)
+vim.keymap.set({ 'n', 'x', 'o' }, ']]', function() require('nvim-treesitter-textobjects.move').goto_next_start('@class.outer', 'textobjects') end)
+-- You can also pass a list to group multiple queries.
+vim.keymap.set(
+  { 'n', 'x', 'o' },
+  ']o',
+  function() require('nvim-treesitter-textobjects.move').goto_next_end({ '@loop.inner', '@loop.outer' }, 'textobjects') end
+)
+vim.keymap.set(
+  { 'n', 'x', 'o' },
+  '[o',
+  function() require('nvim-treesitter-textobjects.move').goto_next_start({ '@loop.inner', '@loop.outer' }, 'textobjects') end
+)
+-- You can also use captures from other query groups like `locals.scm` or `folds.scm`
+vim.keymap.set({ 'n', 'x', 'o' }, ']s', function() require('nvim-treesitter-textobjects.move').goto_next_start('@local.scope', 'locals') end)
+vim.keymap.set({ 'n', 'x', 'o' }, ']z', function() require('nvim-treesitter-textobjects.move').goto_next_start('@fold', 'folds') end)
+
+vim.keymap.set({ 'n', 'x', 'o' }, ']M', function() require('nvim-treesitter-textobjects.move').goto_next_end('@function.outer', 'textobjects') end)
+vim.keymap.set({ 'n', 'x', 'o' }, '][', function() require('nvim-treesitter-textobjects.move').goto_next_end('@class.outer', 'textobjects') end)
+
+vim.keymap.set({ 'n', 'x', 'o' }, '[m', function() require('nvim-treesitter-textobjects.move').goto_previous_start('@function.outer', 'textobjects') end)
+vim.keymap.set({ 'n', 'x', 'o' }, '[[', function() require('nvim-treesitter-textobjects.move').goto_previous_start('@class.outer', 'textobjects') end)
+
+vim.keymap.set({ 'n', 'x', 'o' }, '[M', function() require('nvim-treesitter-textobjects.move').goto_previous_end('@function.outer', 'textobjects') end)
+vim.keymap.set({ 'n', 'x', 'o' }, '[]', function() require('nvim-treesitter-textobjects.move').goto_previous_end('@class.outer', 'textobjects') end)
+
+vim.keymap.set('n', '<leader>e', '<Cmd>Neotree<CR>')
 vim.keymap.set('n', '<leader>x', '<cmd>close<CR>', { desc = 'Close current window' })
 vim.keymap.set('n', '<leader>rgt', ':terminal go test ./...<CR>', { desc = 'Run Go tests' })
 vim.keymap.set('n', '<leader>rgr', ':terminal go run .<CR>', { desc = 'Run Go' })
@@ -134,3 +171,7 @@ import (
     vim.cmd 'normal! G'
   end
 end, { desc = 'Generate test for function under cursor' })
+
+--
+--  KEYMAPS END
+--
