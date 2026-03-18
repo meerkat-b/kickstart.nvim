@@ -934,7 +934,7 @@ require('lazy').setup({
     ---@module 'neo-tree'
     ---@type neotree.Config
     opts = {
-      -- key binding for opening window is in amir.options.lua
+      -- key binding for opening window is in custom/options.lua
       window = {
         width = 30,
         mappings = {
@@ -992,7 +992,7 @@ require('lazy').setup({
   },
 })
 
-require 'amir.theme'
-require 'amir.options'
+require 'custom.theme'
+require 'custom.options'
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
