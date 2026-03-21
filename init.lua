@@ -445,6 +445,20 @@ require('lazy').setup({
           -- Useful when you're not sure what type a variable is and you want to see
           -- the definition of its *type*, not where it was *defined*.
           vim.keymap.set('n', 'grt', builtin.lsp_type_definitions, { buffer = buf, desc = '[G]oto [T]ype Definition' })
+
+          vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf, desc = 'Signature Help' })
+
+          vim.api.nvim_create_autocmd('LspAttach', {
+            callback = function(args)
+              local client = vim.lsp.get_client_by_id(args.data.client_id)
+              if client and client:supports_method 'textDocument/signatureHelp' then
+                vim.api.nvim_create_autocmd('CursorHoldI', {
+                  buffer = args.buf,
+                  callback = function() vim.lsp.buf.signature_help() end,
+                })
+              end
+            end,
+          })
         end,
       })
 

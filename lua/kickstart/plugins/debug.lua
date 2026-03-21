@@ -109,6 +109,26 @@ return {
           disconnect = '⏏',
         },
       },
+      layouts = {
+        {
+          elements = {
+            { id = 'stacks', size = 0.33 },
+            { id = 'breakpoints', size = 0.33 },
+            { id = 'console', size = 0.33 },
+          },
+          size = 30,
+          position = 'left',
+        },
+        {
+          elements = {
+            { id = 'scopes', size = 0.33 },
+            { id = 'watches', size = 0.33 },
+            { id = 'repl', size = 0.33 },
+          },
+          size = 10,
+          position = 'bottom',
+        },
+      },
     }
 
     -- Change breakpoint icons

@@ -4,6 +4,12 @@ vim.o.wrap = true
 vim.opt.shiftwidth = 2
 vim.opt.tabstop = 4
 vim.opt.expandtab = true
+vim.o.switchbuf = 'useopen'
+
+-- Handle resizing editor buffers on window resized
+vim.api.nvim_create_autocmd('VimResized', {
+  callback = function() vim.cmd 'wincmd =' end,
+})
 
 vim.api.nvim_create_autocmd('VimEnter', {
   callback = function() vim.cmd 'windo set wrap' end,
