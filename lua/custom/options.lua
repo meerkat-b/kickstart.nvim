@@ -15,6 +15,23 @@ vim.api.nvim_create_autocmd('VimEnter', {
   callback = function() vim.cmd 'windo set wrap' end,
 })
 
+-- Kill all processes when quitting neovim
+vim.api.nvim_create_autocmd('VimLeavePre', {
+  callback = function()
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+      local job_id = vim.b[buf].terminal_job_id
+      if job_id then pcall(vim.fn.jobstop, job_id) end
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd('TermClose', {
+  callback = function(event)
+    local job_id = vim.b[event.buf].terminal_job_id
+    if job_id then pcall(vim.fn.jobstop, job_id) end
+  end,
+})
+
 --
 --  KEYMAPS START
 --
@@ -54,8 +71,11 @@ vim.keymap.set({ 'n', 'x', 'o' }, '[M', function() require('nvim-treesitter-text
 vim.keymap.set({ 'n', 'x', 'o' }, '[]', function() require('nvim-treesitter-textobjects.move').goto_previous_end('@class.outer', 'textobjects') end)
 
 vim.keymap.set('n', '<leader>e', '<Cmd>Neotree<CR>')
-vim.keymap.set('n', '<leader>x', '<cmd>close<CR>', { desc = 'Close current window' })
-
+vim.keymap.set('n', '<leader>x', function()
+  local job_id = vim.b.terminal_job_id
+  if job_id then vim.fn.jobstop(job_id) end
+  vim.cmd 'close!'
+end, { desc = 'Close current window and kill process' })
 ----------------------------------------------
 -------------- LANGUAGE: GOLANG --------------
 ----------------------------------------------
