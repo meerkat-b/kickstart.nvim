@@ -55,6 +55,10 @@ vim.keymap.set({ 'n', 'x', 'o' }, '[]', function() require('nvim-treesitter-text
 
 vim.keymap.set('n', '<leader>e', '<Cmd>Neotree<CR>')
 vim.keymap.set('n', '<leader>x', '<cmd>close<CR>', { desc = 'Close current window' })
+
+----------------------------------------------
+-------------- LANGUAGE: GOLANG --------------
+----------------------------------------------
 vim.keymap.set('n', '<leader>rgt', ':terminal go test ./...<CR>', { desc = 'Run Go tests' })
 vim.keymap.set('n', '<leader>rgr', ':terminal go run .<CR>', { desc = 'Run Go' })
 vim.keymap.set('n', '<leader>dt', function() require('dap-go').debug_test() end, { desc = 'Debug: Test under cursor' })
@@ -177,6 +181,77 @@ import (
     vim.cmd 'normal! G'
   end
 end, { desc = 'Generate test for function under cursor' })
+
+----------------------------------------------
+-------------- LANGUAGE: PYTHON --------------
+----------------------------------------------
+-- Run current Python file
+vim.keymap.set('n', '<leader>rpr', function() vim.cmd('split | terminal python3 ' .. vim.fn.expand '%') end, { desc = 'Run Python file' })
+
+-- Run all tests with pytest
+vim.keymap.set('n', '<leader>rpt', ':split | terminal python3 -m pytest -v<CR>', { desc = 'Run Python tests' })
+
+-- Run test file in current buffer
+vim.keymap.set('n', '<leader>rpf', function() vim.cmd('split | terminal python3 -m pytest -v ' .. vim.fn.expand '%') end, { desc = 'Run Python test file' })
+-- Debug test method
+vim.keymap.set('n', '<leader>dpd', function() require('dap-python').test_method() end, { desc = 'Debug: Python test method' })
+-- Debug python test classes
+vim.keymap.set('n', '<leader>dpc', function() require('dap-python').test_class() end, { desc = 'Debug: Python test class' })
+
+-- Debug current Python file
+vim.keymap.set(
+  'n',
+  '<leader>dpf',
+  function()
+    require('dap').run {
+      type = 'python',
+      request = 'launch',
+      name = 'Launch file',
+      program = '${file}',
+      console = 'integratedTerminal',
+    }
+  end,
+  { desc = 'Debug: Python file' }
+)
+
+-- Debug with arguments (prompts you for input)
+vim.keymap.set(
+  'n',
+  '<leader>dpa',
+  function()
+    require('dap').run {
+      type = 'python',
+      request = 'launch',
+      name = 'Launch file with args',
+      program = '${file}',
+      args = vim.split(vim.fn.input 'Arguments: ', ' '),
+      console = 'integratedTerminal',
+    }
+  end,
+  { desc = 'Debug: Python file with args' }
+)
+
+-- Run single test under cursor
+vim.keymap.set('n', '<leader>rps', function()
+  local node = vim.treesitter.get_node()
+  local func_name = nil
+
+  while node do
+    if node:type() == 'function_definition' then
+      local name_node = node:field('name')[1]
+      if name_node then func_name = vim.treesitter.get_node_text(name_node, 0) end
+      break
+    end
+    node = node:parent()
+  end
+
+  if not func_name then
+    vim.notify('No test function found under cursor', vim.log.levels.WARN)
+    return
+  end
+
+  vim.cmd('split | terminal python3 -m pytest -v ' .. vim.fn.expand '%' .. ' -k ' .. func_name)
+end, { desc = 'Run Python test under cursor' })
 
 --
 --  KEYMAPS END
