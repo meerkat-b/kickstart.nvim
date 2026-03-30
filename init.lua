@@ -102,7 +102,7 @@ vim.g.have_nerd_font = true
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -659,6 +659,16 @@ require('lazy').setup({
             },
           },
         },
+        yamlls = {
+          settings = {
+            yaml = {
+              validate = true,
+              schemaStore = {
+                enable = true, -- auto-detect schemas for known files (docker-compose, GitHub Actions, k8s, etc.)
+              },
+            },
+          },
+        },
         pyright = {},
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -681,6 +691,7 @@ require('lazy').setup({
         'pyright',
         'debugpy',
         'lua-language-server',
+        'yaml-language-server',
         'rust-analyzer',
         'stylua',
         'tree-sitter-cli',
@@ -949,7 +960,8 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     config = function()
-      local filetypes = { 'bash', 'python', 'c', 'diff', 'go', 'rust', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+      local filetypes =
+        { 'bash', 'python', 'c', 'diff', 'go', 'rust', 'html', 'yaml', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
       require('nvim-treesitter').install(filetypes)
       vim.api.nvim_create_autocmd('FileType', {
         pattern = filetypes,
@@ -994,6 +1006,11 @@ require('lazy').setup({
           ['<leader>e'] = 'close_window',
         },
       },
+      filesystem = {
+        filtered_items = {
+          visible = true,
+        },
+      },
     },
   },
 
@@ -1011,7 +1028,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
