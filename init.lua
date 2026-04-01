@@ -418,16 +418,23 @@ require('lazy').setup({
 
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
+      local vimgrep_arguemnts = { unpack(require('telescope.config').values.vimgrep_arguments) }
+      table.insert(vimgrep_arguemnts, '--hidden')
+      table.insert(vimgrep_arguemnts, '--glob')
+      table.insert(vimgrep_arguemnts, '!**/.git/*')
       require('telescope').setup {
-        -- You can put your default mappings / updates / etc. in here
-        --  All the info you're looking for is in `:help telescope.setup()`
-        --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
-        -- pickers = {}
+        defaults = {
+          vimgrep_arguemnts = vimgrep_arguemnts,
+        },
+        pickers = {
+          find_files = {
+            hidden = true,
+            file_ignore_patterns = { '%.git/' },
+          },
+        },
+        live_grep = {
+          additional_args = { '--hidden', '--glob', '!.git/' },
+        },
         extensions = {
           ['ui-select'] = { require('telescope.themes').get_dropdown() },
         },
