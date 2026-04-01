@@ -656,6 +656,7 @@ require('lazy').setup({
       --  See `:help lsp-config` for information about keys and how to configure
       local servers = {
         clangd = {},
+        terraformls = {},
         gopls = {},
         rust_analyzer = {
           settings = {
@@ -703,6 +704,7 @@ require('lazy').setup({
         'stylua',
         'tree-sitter-cli',
         'delve',
+        'terraform-ls',
       }
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -770,6 +772,8 @@ require('lazy').setup({
         end
       end,
       formatters_by_ft = {
+        terraform = { 'terraform_fmt' },
+        tf = { 'terraform_fmt' },
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
@@ -967,8 +971,25 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     config = function()
-      local filetypes =
-        { 'bash', 'python', 'c', 'diff', 'go', 'rust', 'html', 'yaml', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+      local filetypes = {
+        'bash',
+        'c',
+        'diff',
+        'go',
+        'hcl',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'python',
+        'rust',
+        'terraform',
+        'query',
+        'vim',
+        'vimdoc',
+        'yaml',
+      }
       require('nvim-treesitter').install(filetypes)
       vim.api.nvim_create_autocmd('FileType', {
         pattern = filetypes,
