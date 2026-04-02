@@ -1035,6 +1035,9 @@ require('lazy').setup({
         },
       },
       filesystem = {
+        follow_current_file = {
+          enabled = true,
+        },
         filtered_items = {
           visible = true,
         },
