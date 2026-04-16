@@ -166,6 +166,46 @@ vim.keymap.set('n', '<leader>x', function()
   if job_id then vim.fn.jobstop(job_id) end
   vim.cmd 'close!'
 end, { desc = 'Close current window and kill process' })
+
+local ts_selection_stack = {}
+
+vim.keymap.set('n', '<CR>', function()
+  local node = vim.treesitter.get_node()
+  if not node then return end
+  ts_selection_stack = { node }
+  local sr, sc, er, ec = node:range()
+  vim.fn.setpos("'<", { 0, sr + 1, sc + 1, 0 })
+  vim.fn.setpos("'>", { 0, er + 1, ec, 0 })
+  vim.cmd 'normal! gv'
+end, { desc = 'Start treesitter selection' })
+
+vim.keymap.set('x', '<CR>', function()
+  if #ts_selection_stack == 0 then return end
+  local current = ts_selection_stack[#ts_selection_stack]
+  local parent = current:parent()
+  if not parent then return end
+  table.insert(ts_selection_stack, parent)
+  local sr, sc, er, ec = parent:range()
+  vim.fn.setpos("'<", { 0, sr + 1, sc + 1, 0 })
+  vim.fn.setpos("'>", { 0, er + 1, ec, 0 })
+  vim.cmd 'normal! gv'
+end, { desc = 'Expand treesitter selection' })
+
+vim.keymap.set('x', '<BS>', function()
+  if #ts_selection_stack <= 1 then return end
+  table.remove(ts_selection_stack)
+  local node = ts_selection_stack[#ts_selection_stack]
+  local sr, sc, er, ec = node:range()
+  vim.fn.setpos("'<", { 0, sr + 1, sc + 1, 0 })
+  vim.fn.setpos("'>", { 0, er + 1, ec, 0 })
+  vim.cmd 'normal! gv'
+end, { desc = 'Shrink treesitter selection' })
+
+vim.api.nvim_create_autocmd('ModeChanged', {
+  pattern = '[vV\x16]*:n',
+  callback = function() ts_selection_stack = {} end,
+})
+
 ----------------------------------------------
 -------------- LANGUAGE: GOLANG --------------
 ----------------------------------------------
