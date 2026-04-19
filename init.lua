@@ -311,11 +311,7 @@ require('lazy').setup({
       -- Document existing key chains
       spec = {
         { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
-        { '<leader>g', group = '[G]enerate' },
-        { '<leader>gg', group = '[G]olang' },
-        { '<leader>ggt', group = '[T]esting' },
-        { '<leader>r', group = '[R]un/Test' },
-        { '<leader>d', group = '[D]ebug' },
+        { '<leader>t', group = '[T]est (neotest)' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },
@@ -355,6 +351,50 @@ require('lazy').setup({
     'mfussenegger/nvim-dap-python',
     dependencies = { 'mfussenegger/nvim-dap' },
     config = function() require('dap-python').setup 'python3' end,
+  },
+  {
+    'mrcjkb/rustaceanvim',
+    version = '^6',
+    lazy = false, -- plugin is already lazy; attaches via filetype
+    ft = { 'rust' },
+    init = function()
+      vim.g.rustaceanvim = {
+        dap = {
+          autoload_configurations = true,
+        },
+      }
+    end,
+  },
+  {
+    'nvim-neotest/neotest',
+    dependencies = {
+      'nvim-neotest/nvim-nio',
+      'nvim-lua/plenary.nvim',
+      'antoinemadec/FixCursorHold.nvim',
+      'nvim-treesitter/nvim-treesitter',
+      'fredrikaverpil/neotest-golang',
+      'nvim-neotest/neotest-python',
+      'rouge8/neotest-rust',
+    },
+    config = function()
+      require('neotest').setup {
+        adapters = {
+          require 'neotest-golang' {},
+          require 'neotest-python' { dap = { justMyCode = false } },
+          require 'neotest-rust',
+        },
+      }
+    end,
+    keys = {
+      { '<leader>tr', function() require('neotest').run.run() end, desc = 'Run nearest test' },
+      { '<leader>tf', function() require('neotest').run.run(vim.fn.expand '%') end, desc = 'Run tests in file' },
+      { '<leader>ta', function() require('neotest').run.run(vim.fn.getcwd()) end, desc = 'Run all tests' },
+      { '<leader>tl', function() require('neotest').run.run_last() end, desc = 'Run last test' },
+      { '<leader>td', function() require('neotest').run.run { strategy = 'dap' } end, desc = 'Debug nearest test' },
+      { '<leader>ts', function() require('neotest').summary.toggle() end, desc = 'Toggle test summary' },
+      { '<leader>to', function() require('neotest').output.open { enter = true } end, desc = 'Open test output' },
+      { '<leader>tS', function() require('neotest').run.stop() end, desc = 'Stop test run' },
+    },
   },
   -- NOTE: Plugins can specify dependencies.
   --
@@ -656,15 +696,7 @@ require('lazy').setup({
         clangd = {},
         terraformls = {},
         gopls = {},
-        rust_analyzer = {
-          settings = {
-            ['rust-analyzer'] = {
-              check = {
-                command = 'clippy', -- use clippy for linting instead of cargo check
-              },
-            },
-          },
-        },
+        -- rust-analyzer is owned by rustaceanvim, not nvim-lspconfig.
         yamlls = {
           settings = {
             yaml = {
@@ -699,6 +731,7 @@ require('lazy').setup({
         'lua-language-server',
         'yaml-language-server',
         'rust-analyzer',
+        'codelldb',
         'stylua',
         'tree-sitter-cli',
         'delve',
