@@ -43,6 +43,14 @@ vim.api.nvim_create_autocmd('TermClose', {
 --
 --  KEYMAPS START
 --
+--
+
+-- Resizing buffer
+vim.keymap.set('n', '<A-h>', '<cmd>vertical resize -2<CR>', { desc = 'Shrink window width' })
+vim.keymap.set('n', '<A-l>', '<cmd>vertical resize +2<CR>', { desc = 'Grow window width' })
+vim.keymap.set('n', '<A-j>', '<cmd>resize -2<CR>', { desc = 'Shrink window height' })
+vim.keymap.set('n', '<A-k>', '<cmd>resize +2<CR>', { desc = 'Grow window height' })
+
 vim.keymap.set(
   { 'x', 'o' },
   'am',
@@ -209,3 +217,7 @@ vim.api.nvim_create_autocmd('ModeChanged', {
 -- Custom language-agnostic dispatcher lives at lua/custom/lang/ — currently
 -- disabled in favor of neotest + rustaceanvim. Re-enable by un-commenting:
 -- require 'custom.lang'
+
+--
+--  KEYMAPS END
+--

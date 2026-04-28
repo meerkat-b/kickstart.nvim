@@ -324,6 +324,9 @@ require('lazy').setup({
     },
   },
   {
+    { 'akinsho/toggleterm.nvim', version = '*', config = true },
+  },
+  {
     'coder/claudecode.nvim',
     dependencies = { 'folke/snacks.nvim' },
     config = true,
@@ -1047,6 +1050,13 @@ require('lazy').setup({
     end,
   },
   {
+    'kdheepak/lazygit.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    keys = {
+      { '<leader>lg', '<cmd>LazyGit<CR>', desc = 'LazyGit' },
+    },
+  },
+  {
     'nvim-neo-tree/neo-tree.nvim',
     branch = 'v3.x',
     dependencies = {
@@ -1058,6 +1068,15 @@ require('lazy').setup({
     ---@module 'neo-tree'
     ---@type neotree.Config
     opts = {
+      sources = {
+        'filesystem',
+        'buffers',
+        'git_status',
+        'document_symbols',
+      },
+      source_selector = {
+        winbar = true, -- shows tabs at the top of the neo-tree panel
+      },
       -- key binding for opening window is in custom/options.lua
       window = {
         width = 30,
