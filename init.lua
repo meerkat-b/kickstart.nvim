@@ -318,7 +318,12 @@ require('lazy').setup({
   },
   {
     'MagicDuck/grug-far.nvim',
-    opts = {},
+    opts = {
+      prefills = {
+        filesFilter = '!.git/',
+        flags = '--hidden',
+      },
+    },
     keys = {
       { '<leader>sr', function() require('grug-far').open() end, desc = '[S]earch and [R]eplace' },
     },
