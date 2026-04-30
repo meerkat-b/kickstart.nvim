@@ -744,6 +744,7 @@ require('lazy').setup({
         'tree-sitter-cli',
         'delve',
         'terraform-ls',
+        'gitlab-ci-ls',
       }
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -1150,5 +1151,6 @@ require('lazy').setup({
 
 require 'custom.theme'
 require 'custom.options'
+require 'custom.gitlab-ls'
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
