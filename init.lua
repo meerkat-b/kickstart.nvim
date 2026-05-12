@@ -1079,13 +1079,13 @@ require('lazy').setup({
     opts = {
       sources = {
         'filesystem',
-        'buffers',
+        -- 'buffers',
         'git_status',
-        'document_symbols',
+        -- 'document_symbols',
       },
-      source_selector = {
-        winbar = true, -- shows tabs at the top of the neo-tree panel
-      },
+      -- source_selector = {
+      --   winbar = true, -- shows tabs at the top of the neo-tree panel
+      -- },
       -- key binding for opening window is in custom/options.lua
       window = {
         width = 30,
@@ -1102,6 +1102,55 @@ require('lazy').setup({
         },
       },
     },
+  },
+  {
+    'akinsho/bufferline.nvim',
+    version = '*',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    event = 'VeryLazy',
+    opts = {
+      options = {
+        mode = 'buffers',
+        diagnostics = 'nvim_lsp',
+        show_buffer_close_icons = true,
+        show_close_icon = false,
+        separator_style = 'thin',
+        offsets = {
+          {
+            filetype = 'neo-tree',
+            -- text = 'Files',
+            highlight = 'Directory',
+            text_align = 'left',
+            separator = true,
+          },
+        },
+      },
+    },
+  },
+  {
+    'b0o/incline.nvim',
+    event = 'VeryLazy',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      local devicons = require 'nvim-web-devicons'
+      require('incline').setup {
+        window = { margin = { vertical = 0, horizontal = 1 } },
+        hide = { cursorline = true },
+        render = function(props)
+          local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ':t')
+          if filename == '' then filename = '[No Name]' end
+          local ft_icon, ft_color = devicons.get_icon_color(filename)
+          local modified = vim.bo[props.buf].modified
+          return {
+            ft_icon and { ' ', ft_icon, ' ', guifg = ft_color } or '',
+            ' ',
+            { filename, gui = modified and 'bold,italic' or 'bold' },
+            modified and { ' ●', guifg = '#f7768e' } or '',
+            ' ',
+          }
+        end,
+      }
+    end,
   },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
