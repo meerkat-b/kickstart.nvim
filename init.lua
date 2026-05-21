@@ -98,11 +98,14 @@ vim.g.have_nerd_font = true
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
+-- Auto read file changes from disk
+vim.opt.autoread = true
+
 -- Make line numbers default
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
-vim.o.relativenumber = true
+vim.o.relativenumber = false
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -1094,6 +1097,13 @@ require('lazy').setup({
         },
       },
       filesystem = {
+        -- components = {
+        --   name = function(config, node, state)
+        --     local result = require('neo-tree.sources.filesystem.components').name(config, node, state)
+        --     if node:get_depth() == 1 and node.type ~= 'message' then result.text = vim.fn.fnamemodify(node.path, ':t') end
+        --     return result
+        --   end,
+        -- },
         follow_current_file = {
           enabled = true,
         },
@@ -1114,7 +1124,7 @@ require('lazy').setup({
         diagnostics = 'nvim_lsp',
         show_buffer_close_icons = true,
         show_close_icon = false,
-        separator_style = 'thin',
+        separator_style = 'slant',
         offsets = {
           {
             filetype = 'neo-tree',
