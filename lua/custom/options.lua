@@ -44,6 +44,17 @@ vim.api.nvim_create_autocmd('TermClose', {
 --  KEYMAPS START
 --
 --
+--
+
+-- Git DiffView
+vim.keymap.set('n', '<leader>gd', ':DiffviewOpen<CR>', { desc = 'Git: Diff working tree' })
+vim.keymap.set('n', '<leader>gh', ':DiffviewFileHistory %<CR>', { desc = 'Git: File history' })
+vim.keymap.set('n', '<leader>gH', ':DiffviewFileHistory<CR>', { desc = 'Git: Project history' })
+vim.keymap.set('n', '<leader>gc', ':DiffviewClose<CR>', { desc = 'Git: Close diffview' })
+vim.keymap.set('n', '<leader>gb', function()
+  local branch = vim.fn.input 'Compare with branch: '
+  if branch ~= '' then vim.cmd('DiffviewOpen ' .. branch .. ' -- ' .. vim.fn.expand '%') end
+end, { desc = 'Git: Compare file with branch' })
 
 -- Resizing buffer
 vim.keymap.set('n', '<A-h>', '<cmd>vertical resize -2<CR>', { desc = 'Shrink window width' })
