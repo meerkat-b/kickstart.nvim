@@ -392,6 +392,7 @@ require('lazy').setup({
         adapters = {
           require 'neotest-golang' {},
           require 'neotest-python' { dap = { justMyCode = false } },
+          require 'neotest-zig' { dap = { adapter = lldb } },
           require 'neotest-rust',
         },
       }
@@ -704,6 +705,7 @@ require('lazy').setup({
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --  See `:help lsp-config` for information about keys and how to configure
       local servers = {
+        zls = {},
         clangd = {},
         terraformls = {},
         gopls = {},
@@ -748,6 +750,7 @@ require('lazy').setup({
         'delve',
         'terraform-ls',
         'gitlab-ci-ls',
+        'zls',
       }
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -1039,6 +1042,8 @@ require('lazy').setup({
         'vim',
         'vimdoc',
         'yaml',
+        'zig',
+        'zir',
       }
       require('nvim-treesitter').install(filetypes)
       vim.api.nvim_create_autocmd('FileType', {
