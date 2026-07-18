@@ -332,7 +332,7 @@ require('lazy').setup({
     },
   },
   {
-    { 'akinsho/toggleterm.nvim', version = '*', config = true },
+    { 'akinsho/toggleterm.nvim', version = '*', opts = { shade_terminals = false } },
   },
   {
     'coder/claudecode.nvim',
@@ -542,17 +542,18 @@ require('lazy').setup({
 
           vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, { buffer = buf, desc = 'Signature Help' })
 
-          vim.api.nvim_create_autocmd('LspAttach', {
-            callback = function(args)
-              local client = vim.lsp.get_client_by_id(args.data.client_id)
-              if client and client:supports_method 'textDocument/signatureHelp' then
-                vim.api.nvim_create_autocmd('CursorHoldI', {
-                  buffer = args.buf,
-                  callback = function() vim.lsp.buf.signature_help() end,
-                })
-              end
-            end,
-          })
+          -- Commenting to fix cursor stealing floating buffer bug
+          -- vim.api.nvim_create_autocmd('LspAttach', {
+          --   callback = function(args)
+          --     local client = vim.lsp.get_client_by_id(args.data.client_id)
+          --     if client and client:supports_method 'textDocument/signatureHelp' then
+          --       vim.api.nvim_create_autocmd('CursorHoldI', {
+          --         buffer = args.buf,
+          --         callback = function() vim.lsp.buf.signature_help() end,
+          --       })
+          --     end
+          --   end,
+          -- })
         end,
       })
 
@@ -709,6 +710,7 @@ require('lazy').setup({
         clangd = {},
         terraformls = {},
         gopls = {},
+        jdtls = {},
         -- rust-analyzer is owned by rustaceanvim, not nvim-lspconfig.
         yamlls = {
           settings = {
@@ -741,6 +743,7 @@ require('lazy').setup({
         'gopls',
         'pyright',
         'debugpy',
+        'jdtls',
         'lua-language-server',
         'yaml-language-server',
         'rust-analyzer',
@@ -963,25 +966,17 @@ require('lazy').setup({
     priority = 1000, -- load before other plugins
     config = function()
       require('kanagawa').setup {
+        compile = true,
         -- optional config goes here
       }
     end,
   },
-  {
-    'EdenEast/nightfox.nvim',
-    priority = 1000, -- load before other plugins
-    config = function()
-      require('nightfox').setup {
-        -- optional config goes here
-      }
-    end,
-  },
-  {
-    'folke/tokyonight.nvim',
-    lazy = false,
-    priority = 1000,
-    opts = {},
-  },
+  -- {
+  --   'folke/tokyonight.nvim',
+  --   lazy = false,
+  --   priority = 1000,
+  --   opts = {},
+  -- },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -1031,6 +1026,7 @@ require('lazy').setup({
         'go',
         'hcl',
         'html',
+        'java',
         'lua',
         'luadoc',
         'markdown',
